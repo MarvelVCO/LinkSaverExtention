@@ -1,5 +1,7 @@
 $('#input-btn').on('click', saveInput)
 $('#clear-btn').on('click', clearLeads)
+$('#tab-btn').on('click', addCurrentTab)
+$('#all-tabs-btn').on('click', addAllTabs)
 inputEl = $('#input-el')
 ulEl = $('#ul-el')
 
@@ -41,6 +43,22 @@ function areYouSure() {
         localStorage.setItem('myLeads', JSON.stringify(myLeads))
         resetClearBtn()
     })
+}
+
+function addCurrentTab() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        myLeads.push(tabs[0].url)
+        localStorage.setItem('myLeads', JSON.stringify(myLeads))
+        renderLeads()
+    });
+}
+
+function addAllTabs() {
+    chrome.tabs.query({ currentWindow: true }, function (tabs) {
+        tabs.forEach(t => myLeads.push(t.url))
+        localStorage.setItem('myLeads', JSON.stringify(myLeads))
+        renderLeads()
+    });
 }
 
 function renderLeads() {
